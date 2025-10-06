@@ -5,6 +5,8 @@ int MIX_OFFSET = DEFAULT_MIX_OFFSET;
 int R_OffsetFactor = DEFAULT_OFFSET;
 int G_OffsetFactor = DEFAULT_OFFSET;
 int B_OffsetFactor = DEFAULT_OFFSET;
+int berlinSize = 0;
+int berlinEnable = 0;
 
 int MIX_MODE = DEFAULT_MIX_MODE;
 int output_mode = OUTPUT_PNG;
@@ -45,6 +47,33 @@ uchar pixelOffset(uchar origin, int offsetFactor)
     if (origin == 255)
         return 255 - MIX_OFFSET;
     return max(min(origin + MIX_OFFSET * offsetFactor, 255), 0);
+}
+
+/**
+ * 添加柏林噪声
+ */
+void AddBerlinNoise(Mat &mat)
+{
+    if (berlinSize == 0 || berlinEnable == 0)
+    {
+        return;
+    }
+
+    size_t r = mat.rows, c = mat.cols;
+    for (size_t i = 0; i < r; i++)
+    {
+        uchar *data = mat.ptr<uchar>(i);
+        for (size_t j = 0; j < c; j++)
+        {
+            int noise = int(berlinSize * ((rand() % 2000) - 1000) * 0.00025);
+            (*data) = max(0, min(255, (*data) + noise));
+            data++;
+            (*data) = max(0, min(255, (*data) + noise));
+            data++;
+            (*data) = max(0, min(255, (*data) + noise));
+            data++;
+        }
+    }
 }
 
 void ImageMix(Mat &mat)
@@ -121,6 +150,7 @@ void getImgFormClipboard(HWND hwnd)
         {
         case DEFAULT_MIX_MODE:
             ImageMix(img);
+            AddBerlinNoise(img);
             break;
         case COCKROACH_MODE:
             img = imread("./image/cockroach.png", CV_8UC4);
@@ -133,7 +163,9 @@ void getImgFormClipboard(HWND hwnd)
             break;
         }
         if (angle)
+        {
             rotate(img, img, ROTATE_ANGLE);
+        }
 
         Mat temp = Mat();
         if (output_mode == OUTPUT_JPG)

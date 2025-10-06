@@ -40,6 +40,8 @@ extern int MIX_OFFSET;
 extern int R_OffsetFactor;
 extern int G_OffsetFactor;
 extern int B_OffsetFactor;
+extern int berlinSize;
+extern int berlinEnable;
 
 extern int MIX_MODE;
 

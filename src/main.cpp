@@ -21,6 +21,12 @@ inline void loadConfig()
     R_OffsetFactor = (read() > 0 ? 1 : -1);
     G_OffsetFactor = (read() > 0 ? 1 : -1);
     B_OffsetFactor = (read() > 0 ? 1 : -1);
+    berlinSize = read();
+    if (berlinSize < 0)
+    {
+        berlinSize *= -1;
+    }
+    berlinEnable = (read() != 0);
 
     fclose(stdin);
 
@@ -37,6 +43,8 @@ inline void loadConfig()
     printf("R mix option: %d\n", (R_OffsetFactor + 1) / 2);
     printf("G mix option: %d\n", (G_OffsetFactor + 1) / 2);
     printf("B mix option: %d\n", (B_OffsetFactor + 1) / 2);
+    printf("berlin size: %d\n", berlinSize);
+    printf("berlin enable: %d\n", berlinEnable);
 
     fclose(stdout);
 }
@@ -62,6 +70,7 @@ WNDCLASS wndclass;
 #define IDR_ROTATE 107
 #define IDR_RESET_ANGLE 108
 #define IDR_OUTPUT_MODE 109
+#define IDR_BERLIN_NOISE 110
 
 #define IDR_DLC 200
 #define IDR_COCKROACH 201
@@ -138,6 +147,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
         AppendMenu(hmenu, MF_STRING, IDR_ROTATE, "顺时针旋转 0°");
         AppendMenu(hmenu, MF_STRING, IDR_RESET_ANGLE, "重置旋转角度");
+        //=======================================================================================
+        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
+        switch (berlinEnable)
+        {
+        case 0:
+            AppendMenu(hmenu, MF_STRING, IDR_BERLIN_NOISE, "柏林噪声(已禁用)");
+            break;
+        case 1:
+            AppendMenu(hmenu, MF_STRING, IDR_BERLIN_NOISE, "柏林噪声(已启用)");
+            break;
+        default:
+            break;
+        }
         //=======================================================================================
         AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
         switch (output_mode)
@@ -240,6 +262,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     break;
                 case 270:
                     ModifyMenu(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, "顺时针旋转 270°");
+                    break;
+                default:
+                    break;
+                }
+            }
+            if (id == IDR_BERLIN_NOISE)
+            {
+                berlinEnable = 1 - berlinEnable;
+                switch (berlinEnable)
+                {
+                case 0:
+                    ModifyMenu(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, "柏林噪声(已禁用)");
+                    break;
+                case 1:
+                    ModifyMenu(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, "柏林噪声(已启用)");
                     break;
                 default:
                     break;

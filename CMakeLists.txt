@@ -20,6 +20,7 @@ set(SRC
 )
 
 add_link_options(-Wl,-subsystem,windows,-entry,mainCRTStartup)
+add_definitions(-w)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(ImageMix ${SRC})
