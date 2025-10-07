@@ -1,60 +1,6 @@
 #include "lib_cv.h"
 #include "log.h"
 
-inline ll read();
-inline LPCWSTR stringToLPCWSTR(std::string orig)
-{
-    size_t origsize = orig.length() + 1;
-    size_t convertedChars = 0;
-    wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t) * (orig.length() - 1));
-    mbstowcs_s(&convertedChars, wcstring, origsize, orig.c_str(), _TRUNCATE);
-
-    return wcstring;
-}
-inline void loadConfig()
-{
-    freopen("./config.cfg", "r", stdin);
-
-    MAXN_MIX = read();
-    MIX_OFFSET = read();
-    R_OffsetFactor = (read() > 0 ? 1 : -1);
-    G_OffsetFactor = (read() > 0 ? 1 : -1);
-    B_OffsetFactor = (read() > 0 ? 1 : -1);
-    berlinSize = read();
-    if (berlinSize < 0)
-    {
-        berlinSize *= -1;
-    }
-    berlinEnable = (read() != 0);
-
-    fclose(stdin);
-
-    if (MAXN_MIX < 1 || MAXN_MIX > 1e9)
-        MAXN_MIX = DEFAULT_MAXN_MIX;
-    if (MIX_OFFSET < 0 || MIX_OFFSET > 255)
-        MIX_OFFSET = DEFAULT_MIX_OFFSET;
-
-    freopen("./config.cfg", "w", stdout);
-
-    puts("parameters:");
-    printf("max mixed pixel: %d\n", MAXN_MIX);
-    printf("RGB offset: %d\n", MIX_OFFSET);
-    printf("R mix option: %d\n", (R_OffsetFactor + 1) / 2);
-    printf("G mix option: %d\n", (G_OffsetFactor + 1) / 2);
-    printf("B mix option: %d\n", (B_OffsetFactor + 1) / 2);
-    printf("berlin size: %d\n", berlinSize);
-    printf("berlin enable: %d\n", berlinEnable);
-
-    fclose(stdout);
-}
-inline void _init()
-{
-    srand(time(NULL));
-    loadConfig();
-    R_CODE[90] = ROTATE_90_CLOCKWISE;
-    R_CODE[180] = ROTATE_180;
-    R_CODE[270] = ROTATE_90_COUNTERCLOCKWISE;
-}
 //==========================================
 HWND hwnd;
 MSG msg;
@@ -95,6 +41,77 @@ HWND hwndNextViewer = NULL;
 HWND hWndMixNum = NULL;
 HWND hWndMixOffset = NULL;
 //==========================================
+
+inline ll read();
+inline LPCWSTR stringToLPCWSTR(std::string orig)
+{
+    size_t origsize = orig.length() + 1;
+    size_t convertedChars = 0;
+    wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t) * (orig.length() - 1));
+    mbstowcs_s(&convertedChars, wcstring, origsize, orig.c_str(), _TRUNCATE);
+
+    return wcstring;
+}
+inline void ModifyBerlinMenuItem(int enable)
+{
+    switch (enable)
+    {
+    case 0:
+        ModifyMenuW(hmenu, POS_BERLIN_NOISE, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已禁用)");
+        break;
+    case 1:
+        ModifyMenuW(hmenu, POS_BERLIN_NOISE, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已启用)");
+        break;
+    default:
+        break;
+    }
+}
+inline void loadConfig()
+{
+    freopen("./config.cfg", "r", stdin);
+
+    MAXN_MIX = read();
+    MIX_OFFSET = read();
+    R_OffsetFactor = (read() > 0 ? 1 : -1);
+    G_OffsetFactor = (read() > 0 ? 1 : -1);
+    B_OffsetFactor = (read() > 0 ? 1 : -1);
+    berlinSize = read();
+    if (berlinSize < 0)
+    {
+        berlinSize *= -1;
+    }
+    berlinEnable = (read() != 0);
+
+    fclose(stdin);
+
+    if (MAXN_MIX < 1 || MAXN_MIX > 1e9)
+        MAXN_MIX = DEFAULT_MAXN_MIX;
+    if (MIX_OFFSET < 0 || MIX_OFFSET > 255)
+        MIX_OFFSET = DEFAULT_MIX_OFFSET;
+
+    freopen("./config.cfg", "w", stdout);
+
+    puts("parameters:");
+    printf("max mixed pixel: %d\n", MAXN_MIX);
+    printf("RGB offset: %d\n", MIX_OFFSET);
+    printf("R mix option: %d\n", (R_OffsetFactor + 1) / 2);
+    printf("G mix option: %d\n", (G_OffsetFactor + 1) / 2);
+    printf("B mix option: %d\n", (B_OffsetFactor + 1) / 2);
+    printf("berlin size: %d\n", berlinSize);
+    printf("berlin enable: %d\n", berlinEnable);
+
+    fclose(stdout);
+    ModifyBerlinMenuItem(berlinEnable);
+}
+inline void _init()
+{
+    srand(time(NULL));
+    loadConfig();
+    R_CODE[90] = ROTATE_90_CLOCKWISE;
+    R_CODE[180] = ROTATE_180;
+    R_CODE[270] = ROTATE_90_COUNTERCLOCKWISE;
+}
+
 inline void updateMenuItem(HMENU hmenu, int IDR)
 {
     for (int idr = 0; idr < excNum_0; idr++)
@@ -115,6 +132,7 @@ inline void updateMenuItem_Mix(HMENU hmenu)
     else if (MIX_MODE == TANK_MODE)
         updateMenuItem(hmenu, IDR_TANK);
 }
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     NOTIFYICONDATA nid;
@@ -280,17 +298,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (id == IDR_BERLIN_NOISE)
             {
                 berlinEnable = 1 - berlinEnable;
-                switch (berlinEnable)
-                {
-                case 0:
-                    ModifyMenuW(hmenu, POS_BERLIN_NOISE, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已禁用)");
-                    break;
-                case 1:
-                    ModifyMenuW(hmenu, POS_BERLIN_NOISE, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已启用)");
-                    break;
-                default:
-                    break;
-                }
+                ModifyBerlinMenuItem(berlinEnable);
             }
             if (id == IDR_RESET_ANGLE)
             {
