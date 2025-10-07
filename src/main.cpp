@@ -70,6 +70,8 @@ WNDCLASS wndclass;
 #define IDR_RESET_ANGLE 108
 #define IDR_OUTPUT_MODE 109
 #define IDR_BERLIN_NOISE 110
+#define IDR_OPENCFG 111
+#define IDR_OPENLOG 112
 
 #define IDR_DLC 200
 #define IDR_COCKROACH 201
@@ -183,6 +185,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         AppendMenuW(hmenu, MF_STRING, IDR_LOADCFG, L"重载混淆参数");
         //=======================================================================================
         AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_STRING, IDR_OPENCFG, L"打开配置文件");
+        //=======================================================================================
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_STRING, IDR_OPENLOG, L"打开日志文件");
+        //=======================================================================================
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
         AppendMenuW(hmenu, MF_STRING, IDR_ABOUT, L"关于");
         AppendMenuW(hmenu, MF_STRING, IDR_EXIT, L"退出");
         break;
@@ -234,6 +242,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 loadConfig();
                 MessageBox(hwnd, TEXT("config updated"), szAppClassName, MB_OK);
+            }
+            if (id == IDR_OPENCFG)
+            {
+                ShellExecute(NULL, TEXT("open"), TEXT("notepad.exe"), TEXT("config.cfg"), NULL, SW_SHOWNORMAL);
+            }
+            if (id == IDR_OPENLOG)
+            {
+                ShellExecute(NULL, TEXT("open"), TEXT("notepad.exe"), TEXT("log.txt"), NULL, SW_SHOWNORMAL);
             }
             if (id == IDR_COCKROACH)
             {
