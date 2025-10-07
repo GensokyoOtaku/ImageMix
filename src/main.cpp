@@ -84,8 +84,8 @@ int excNum_0 = 4;
 bool start = true;
 LPCTSTR szAppClassName = TEXT("ImgMix");
 LPCTSTR szAppWindowName = TEXT("ImgMix");
-HMENU hmenu;    // ²Ëµ¥¾ä±ú
-HMENU hsubmode; // ×Ó²Ëµ¥
+HMENU hmenu;    // èœå•å¥æŸ„
+HMENU hsubmode; // å­èœå•
 HWND hwndNextViewer = NULL;
 HWND hWndMixNum = NULL;
 HWND hWndMixOffset = NULL;
@@ -114,13 +114,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     NOTIFYICONDATA nid;
     UINT WM_TASKBARCREATED;
-    POINT pt; // ÓÃÓÚ½ÓÊÕÊó±ê×ø±ê
-    int id;   // ÓÃÓÚ½ÓÊÕ²Ëµ¥Ñ¡Ïî·µ»ØÖµ
-    // ²»ÒªĞŞ¸ÄTaskbarCreated£¬ÕâÊÇÏµÍ³ÈÎÎñÀ¸×Ô¶¨ÒåµÄÏûÏ¢
+    POINT pt; // ç”¨äºæ¥æ”¶é¼ æ ‡åæ ‡
+    int id;   // ç”¨äºæ¥æ”¶èœå•é€‰é¡¹è¿”å›å€¼
+    // ä¸è¦ä¿®æ”¹TaskbarCreatedï¼Œè¿™æ˜¯ç³»ç»Ÿä»»åŠ¡æ è‡ªå®šä¹‰çš„æ¶ˆæ¯
     WM_TASKBARCREATED = RegisterWindowMessage(TEXT("TaskbarCreated"));
     switch (message)
     {
-    case WM_CREATE: // ´°¿Ú´´½¨Ê±ºòµÄÏûÏ¢.
+    case WM_CREATE: // çª—å£åˆ›å»ºæ—¶å€™çš„æ¶ˆæ¯.
         LOG("");
         LOG("--------------- ImgMix Start ------------------");
         hwndNextViewer = SetClipboardViewer(hwnd);
@@ -137,62 +137,62 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             LR_DEFAULTCOLOR | LR_CREATEDIBSECTION | LR_LOADFROMFILE);
         lstrcpy(nid.szTip, szAppClassName);
         Shell_NotifyIcon(NIM_ADD, &nid);
-        hmenu = CreatePopupMenu(); // Éú³É²Ëµ¥
+        hmenu = CreatePopupMenu(); // ç”Ÿæˆèœå•
         hsubmode = CreatePopupMenu();
-        AppendMenu(hmenu, MF_STRING, IDR_START, "ÏñËØÌæ»»"); // Îª²Ëµ¥Ìí¼ÓÑ¡Ïî
-        AppendMenu(hmenu, MF_STRING, IDR_TANK, "»ÃÓ°Ì¹¿Ë");
-        // AppendMenu(hmenu, MF_POPUP | MF_STRING, IDR_DLC, L"Õû¹ÆÄ£Ê½");
-        AppendMenu(hmenu, MF_STRING, IDR_COCKROACH, "¾øÊÀ´óó¯òë");
+        AppendMenuW(hmenu, MF_STRING, IDR_START, L"åƒç´ æ›¿æ¢"); // ä¸ºèœå•æ·»åŠ é€‰é¡¹
+        AppendMenuW(hmenu, MF_STRING, IDR_TANK, L"å¹»å½±å¦å…‹");
+        // AppendMenuW(hmenu, MF_POPUP | MF_STRING, IDR_DLC, L"æ•´è›Šæ¨¡å¼");
+        AppendMenuW(hmenu, MF_STRING, IDR_COCKROACH, L"ç»ä¸–å¤§èŸ‘è‚");
         //=======================================================================================
-        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
-        AppendMenu(hmenu, MF_STRING, IDR_ROTATE, "Ë³Ê±ÕëĞı×ª 0¡ã");
-        AppendMenu(hmenu, MF_STRING, IDR_RESET_ANGLE, "ÖØÖÃĞı×ª½Ç¶È");
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_STRING, IDR_ROTATE, L"é¡ºæ—¶é’ˆæ—‹è½¬ 0Â°");
+        AppendMenuW(hmenu, MF_STRING, IDR_RESET_ANGLE, L"é‡ç½®æ—‹è½¬è§’åº¦");
         //=======================================================================================
-        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
         switch (berlinEnable)
         {
         case 0:
-            AppendMenu(hmenu, MF_STRING, IDR_BERLIN_NOISE, "°ØÁÖÔëÉù(ÒÑ½ûÓÃ)");
+            AppendMenuW(hmenu, MF_STRING, IDR_BERLIN_NOISE, L"æŸæ—å™ªå£°(å·²ç¦ç”¨)");
             break;
         case 1:
-            AppendMenu(hmenu, MF_STRING, IDR_BERLIN_NOISE, "°ØÁÖÔëÉù(ÒÑÆôÓÃ)");
+            AppendMenuW(hmenu, MF_STRING, IDR_BERLIN_NOISE, L"æŸæ—å™ªå£°(å·²å¯ç”¨)");
             break;
         default:
             break;
         }
         //=======================================================================================
-        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
         switch (output_mode)
         {
         case OUTPUT_JPG:
-            AppendMenu(hmenu, MF_STRING, IDR_OUTPUT_MODE, "Êä³ö¸ñÊ½£ºJPEG");
+            AppendMenuW(hmenu, MF_STRING, IDR_OUTPUT_MODE, L"è¾“å‡ºæ ¼å¼ï¼šJPEG");
             break;
         case OUTPUT_PNG:
-            AppendMenu(hmenu, MF_STRING, IDR_OUTPUT_MODE, "Êä³ö¸ñÊ½£ºPNG");
+            AppendMenuW(hmenu, MF_STRING, IDR_OUTPUT_MODE, L"è¾“å‡ºæ ¼å¼ï¼šPNG");
             break;
         default:
             break;
         }
         //=======================================================================================
-        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
-        AppendMenu(hmenu, MF_STRING, IDR_PAUSE, "Í£Ö¹»ìÏı");
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_STRING, IDR_PAUSE, L"åœæ­¢æ··æ·†");
         //=======================================================================================
-        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
-        AppendMenu(hmenu, MF_STRING, IDR_LOADCFG, "ÖØÔØ»ìÏı²ÎÊı");
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_STRING, IDR_LOADCFG, L"é‡è½½æ··æ·†å‚æ•°");
         //=======================================================================================
-        AppendMenu(hmenu, MF_SEPARATOR, NULL, NULL);
-        AppendMenu(hmenu, MF_STRING, IDR_ABOUT, "¹ØÓÚ");
-        AppendMenu(hmenu, MF_STRING, IDR_EXIT, "ÍË³ö");
+        AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
+        AppendMenuW(hmenu, MF_STRING, IDR_ABOUT, L"å…³äº");
+        AppendMenuW(hmenu, MF_STRING, IDR_EXIT, L"é€€å‡º");
 
-        // AppendMenu(hsubmode, MF_STRING, IDR_COCKROACH, L"¾øÊÀ´óó¯òë");
+        // AppendMenuW(hsubmode, MF_STRING, IDR_COCKROACH, L"ç»ä¸–å¤§èŸ‘è‚");
         break;
-    case WM_CHANGECBCHAIN: // ¼àÌıÁ´¸Ä±ä
+    case WM_CHANGECBCHAIN: // ç›‘å¬é“¾æ”¹å˜
         if ((HWND)wParam == hwndNextViewer)
             hwndNextViewer = (HWND)lParam;
         else if (hwndNextViewer)
             SendMessage(hwndNextViewer, message, wParam, lParam);
         break;
-    case WM_DRAWCLIPBOARD: // ¼ôÌù°åÄÚÈİ¸Ä±ä
+    case WM_DRAWCLIPBOARD: // å‰ªè´´æ¿å†…å®¹æ”¹å˜
                            // case WM_PASTE:
         if (start)
         {
@@ -200,17 +200,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             getImgFormClipboard(hwnd);
         }
 
-    case WM_USER: // Á¬ĞøÊ¹ÓÃ¸Ã³ÌĞòÊ±ºòµÄÏûÏ¢.
+    case WM_USER: // è¿ç»­ä½¿ç”¨è¯¥ç¨‹åºæ—¶å€™çš„æ¶ˆæ¯.
         if (lParam == WM_RBUTTONDOWN)
         {
-            GetCursorPos(&pt);           // È¡Êó±ê×ø±ê
-            ::SetForegroundWindow(hwnd); // ½â¾öÔÚ²Ëµ¥Íâµ¥»÷×ó¼ü²Ëµ¥²»ÏûÊ§µÄÎÊÌâ
+            GetCursorPos(&pt);           // å–é¼ æ ‡åæ ‡
+            ::SetForegroundWindow(hwnd); // è§£å†³åœ¨èœå•å¤–å•å‡»å·¦é”®èœå•ä¸æ¶ˆå¤±çš„é—®é¢˜
 
             updateMenuItem_Mix(hmenu);
 
             RECT rect;
             GetWindowRect(hwnd, &rect);
-            id = TrackPopupMenu(hmenu, TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, NULL, hwnd, NULL); // ÏÔÊ¾²Ëµ¥²¢»ñÈ¡Ñ¡ÏîID
+            id = TrackPopupMenu(hmenu, TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, NULL, hwnd, NULL); // æ˜¾ç¤ºèœå•å¹¶è·å–é€‰é¡¹ID
             if (id == IDR_PAUSE)
             {
                 start = false;
@@ -227,18 +227,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 MIX_MODE = TANK_MODE;
                 output_mode = OUTPUT_PNG;
-                ModifyMenu(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, "Êä³ö¸ñÊ½£ºPNG");
+                ModifyMenuW(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"è¾“å‡ºæ ¼å¼ï¼šPNG");
                 LOG("Enable mirage tank mode");
             }
             if (id == IDR_LOADCFG)
             {
                 loadConfig();
-                MessageBox(hwnd, TEXT("»ìÏı²ÎÊıÒÑ¸üĞÂ"), szAppClassName, MB_OK);
+                MessageBox(hwnd, TEXT("config updated"), szAppClassName, MB_OK);
             }
             if (id == IDR_DLC)
             {
-                // GetCursorPos(&pt);//È¡Êó±ê×ø±ê
-                //::SetForegroundWindow(hwnd);//½â¾öÔÚ²Ëµ¥Íâµ¥»÷×ó¼ü²Ëµ¥²»ÏûÊ§µÄÎÊÌâ
+                // GetCursorPos(&pt);//å–é¼ æ ‡åæ ‡
+                //::SetForegroundWindow(hwnd);//è§£å†³åœ¨èœå•å¤–å•å‡»å·¦é”®èœå•ä¸æ¶ˆå¤±çš„é—®é¢˜
                 id = TrackPopupMenu(hsubmode, TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, NULL, hwnd, NULL);
             }
             if (id == IDR_COCKROACH)
@@ -252,16 +252,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 switch (angle)
                 {
                 case 0:
-                    ModifyMenu(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, "Ë³Ê±ÕëĞı×ª 0¡ã");
+                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"é¡ºæ—¶é’ˆæ—‹è½¬ 0Â°");
                     break;
                 case 90:
-                    ModifyMenu(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, "Ë³Ê±ÕëĞı×ª 90¡ã");
+                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"é¡ºæ—¶é’ˆæ—‹è½¬ 90Â°");
                     break;
                 case 180:
-                    ModifyMenu(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, "Ë³Ê±ÕëĞı×ª 180¡ã");
+                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"é¡ºæ—¶é’ˆæ—‹è½¬ 180Â°");
                     break;
                 case 270:
-                    ModifyMenu(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, "Ë³Ê±ÕëĞı×ª 270¡ã");
+                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"é¡ºæ—¶é’ˆæ—‹è½¬ 270Â°");
                     break;
                 default:
                     break;
@@ -273,10 +273,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 switch (berlinEnable)
                 {
                 case 0:
-                    ModifyMenu(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, "°ØÁÖÔëÉù(ÒÑ½ûÓÃ)");
+                    ModifyMenuW(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"æŸæ—å™ªå£°(å·²ç¦ç”¨)");
                     break;
                 case 1:
-                    ModifyMenu(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, "°ØÁÖÔëÉù(ÒÑÆôÓÃ)");
+                    ModifyMenuW(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"æŸæ—å™ªå£°(å·²å¯ç”¨)");
                     break;
                 default:
                     break;
@@ -285,7 +285,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (id == IDR_RESET_ANGLE)
             {
                 angle = 0;
-                ModifyMenu(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, "Ë³Ê±ÕëĞı×ª 0¡ã");
+                ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"é¡ºæ—¶é’ˆæ—‹è½¬ 0Â°");
             }
             if (id == IDR_OUTPUT_MODE)
             {
@@ -295,10 +295,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     switch (output_mode)
                     {
                     case OUTPUT_JPG:
-                        ModifyMenu(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, "Êä³ö¸ñÊ½£ºJPEG");
+                        ModifyMenuW(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"è¾“å‡ºæ ¼å¼ï¼šJPEG");
                         break;
                     case OUTPUT_PNG:
-                        ModifyMenu(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, "Êä³ö¸ñÊ½£ºPNG");
+                        ModifyMenuW(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"è¾“å‡ºæ ¼å¼ï¼šPNG");
                         break;
                     default:
                         break;
@@ -306,11 +306,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 }
                 else
                 {
-                    MessageBox(hwnd, TEXT("»ÃÓ°Ì¹¿ËÄ£Ê½ÎŞ·¨Ê¹ÓÃPNGÒÔÍâ¸ñÊ½Êä³ö"), szAppClassName, MB_OK);
+                    MessageBox(hwnd, TEXT("miracle tank only support png"), szAppClassName, MB_OK);
                 }
             }
             if (id == IDR_ABOUT)
-                MessageBox(hwnd, TEXT("×Ô¶¯»ìÏı¼ôÌù°åÖĞµÄÍ¼Æ¬\nÇë×¢Òâgif»á±»ĞŞ¸ÄÎª¾²Ì¬Í¼Æ¬"), szAppClassName, MB_OK);
+                MessageBox(hwnd, TEXT("QWQ"), szAppClassName, MB_OK);
             if (id == IDR_EXIT)
             {
                 SendMessage(hwnd, WM_CLOSE, wParam, lParam);
@@ -321,18 +321,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 PostMessage(hwnd, WM_LBUTTONDOWN, NULL, NULL);
         }
         break;
-    case WM_DESTROY: // ´°¿ÚÏú»ÙÊ±ºòµÄÏûÏ¢.
+    case WM_DESTROY: // çª—å£é”€æ¯æ—¶å€™çš„æ¶ˆæ¯.
         ChangeClipboardChain(hwnd, hwndNextViewer);
         Shell_NotifyIcon(NIM_DELETE, &nid);
         PostQuitMessage(0);
         break;
     default:
         /*
-         * ·ÀÖ¹µ±Explorer.exe ±ÀÀ£ÒÔºó£¬³ÌĞòÔÚÏµÍ³ÏµÍ³ÍĞÅÌÖĞµÄÍ¼±ê¾ÍÏûÊ§
+         * é˜²æ­¢å½“Explorer.exe å´©æºƒä»¥åï¼Œç¨‹åºåœ¨ç³»ç»Ÿç³»ç»Ÿæ‰˜ç›˜ä¸­çš„å›¾æ ‡å°±æ¶ˆå¤±
          *
-         * Ô­Àí£ºExplorer.exe ÖØĞÂÔØÈëºó»áÖØ½¨ÏµÍ³ÈÎÎñÀ¸¡£µ±ÏµÍ³ÈÎÎñÀ¸½¨Á¢µÄÊ±ºò»áÏòÏµÍ³ÄÚËùÓĞ
-         * ×¢²á½ÓÊÕTaskbarCreated ÏûÏ¢µÄ¶¥¼¶´°¿Ú·¢ËÍÒ»ÌõÏûÏ¢£¬ÎÒÃÇÖ»ĞèÒª²¶×½Õâ¸öÏûÏ¢£¬²¢ÖØ½¨Ïµ
-         * Í³ÍĞÅÌµÄÍ¼±ê¼´¿É¡£
+         * åŸç†ï¼šExplorer.exe é‡æ–°è½½å…¥åä¼šé‡å»ºç³»ç»Ÿä»»åŠ¡æ ã€‚å½“ç³»ç»Ÿä»»åŠ¡æ å»ºç«‹çš„æ—¶å€™ä¼šå‘ç³»ç»Ÿå†…æ‰€æœ‰
+         * æ³¨å†Œæ¥æ”¶TaskbarCreated æ¶ˆæ¯çš„é¡¶çº§çª—å£å‘é€ä¸€æ¡æ¶ˆæ¯ï¼Œæˆ‘ä»¬åªéœ€è¦æ•æ‰è¿™ä¸ªæ¶ˆæ¯ï¼Œå¹¶é‡å»ºç³»
+         * ç»Ÿæ‰˜ç›˜çš„å›¾æ ‡å³å¯ã€‚
          */
         if (message == WM_TASKBARCREATED)
             SendMessage(hwnd, WM_CREATE, wParam, lParam);
@@ -369,7 +369,7 @@ int main()
         return 0;
     }
 
-    // ´Ë´¦Ê¹ÓÃWS_EX_TOOLWINDOW ÊôĞÔÀ´Òş²ØÏÔÊ¾ÔÚÈÎÎñÀ¸ÉÏµÄ´°¿Ú³ÌĞò°´Å¥
+    // æ­¤å¤„ä½¿ç”¨WS_EX_TOOLWINDOW å±æ€§æ¥éšè—æ˜¾ç¤ºåœ¨ä»»åŠ¡æ ä¸Šçš„çª—å£ç¨‹åºæŒ‰é’®
     hwnd = CreateWindowEx(WS_EX_TOOLWINDOW,
                           szAppClassName, szAppWindowName,
                           WS_POPUP,
@@ -383,7 +383,7 @@ int main()
     UpdateWindow(hwnd);
 
     // FreeConsole();
-    // ÏûÏ¢Ñ­»·
+    // æ¶ˆæ¯å¾ªç¯
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
