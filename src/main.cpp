@@ -5,7 +5,6 @@ inline ll read();
 inline LPCWSTR stringToLPCWSTR(std::string orig)
 {
     size_t origsize = orig.length() + 1;
-    // const size_t newsize = 100;
     size_t convertedChars = 0;
     wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t) * (orig.length() - 1));
     mbstowcs_s(&convertedChars, wcstring, origsize, orig.c_str(), _TRUNCATE);
@@ -141,7 +140,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         hsubmode = CreatePopupMenu();
         AppendMenuW(hmenu, MF_STRING, IDR_START, L"像素替换"); // 为菜单添加选项
         AppendMenuW(hmenu, MF_STRING, IDR_TANK, L"幻影坦克");
-        // AppendMenuW(hmenu, MF_POPUP | MF_STRING, IDR_DLC, L"整蛊模式");
         AppendMenuW(hmenu, MF_STRING, IDR_COCKROACH, L"绝世大蟑螂");
         //=======================================================================================
         AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
@@ -183,8 +181,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         AppendMenuW(hmenu, MF_SEPARATOR, NULL, NULL);
         AppendMenuW(hmenu, MF_STRING, IDR_ABOUT, L"关于");
         AppendMenuW(hmenu, MF_STRING, IDR_EXIT, L"退出");
-
-        // AppendMenuW(hsubmode, MF_STRING, IDR_COCKROACH, L"绝世大蟑螂");
         break;
     case WM_CHANGECBCHAIN: // 监听链改变
         if ((HWND)wParam == hwndNextViewer)
@@ -234,12 +230,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 loadConfig();
                 MessageBox(hwnd, TEXT("config updated"), szAppClassName, MB_OK);
-            }
-            if (id == IDR_DLC)
-            {
-                // GetCursorPos(&pt);//取鼠标坐标
-                //::SetForegroundWindow(hwnd);//解决在菜单外单击左键菜单不消失的问题
-                id = TrackPopupMenu(hsubmode, TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, NULL, hwnd, NULL);
             }
             if (id == IDR_COCKROACH)
             {
@@ -382,7 +372,6 @@ int main()
     ShowWindow(hwnd, SW_HIDE);
     UpdateWindow(hwnd);
 
-    // FreeConsole();
     // 消息循环
     while (GetMessage(&msg, NULL, 0, 0))
     {

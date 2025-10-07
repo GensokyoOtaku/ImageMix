@@ -23,7 +23,6 @@ bool Hbitmap2Mat(HBITMAP &hBmp, Mat &mat)
 
     GetObject(hBmp, sizeof(BITMAP), &Bmp);
     int nChannels = Bmp.bmBitsPixel == 1 ? 1 : Bmp.bmBitsPixel / 8;
-    // int depth = Bmp.bmBitsPixel == 1 ? IPL_DEPTH_1U : IPL_DEPTH_8U;
     Mat res_mat;
     res_mat.create(cv::Size(Bmp.bmWidth, Bmp.bmHeight), CV_MAKETYPE(CV_8U, nChannels));
     GetBitmapBits(hBmp, Bmp.bmHeight * Bmp.bmWidth * nChannels, res_mat.data);
@@ -34,7 +33,6 @@ bool Hbitmap2Mat(HBITMAP &hBmp, Mat &mat)
 bool Mat2HBitmap(HBITMAP &hBmp, Mat &mat)
 {
     int nChannels = (mat.type() >> 3) - CV_8U + 1;
-    // int iSize = mat.cols * mat.rows * nChannels;
     hBmp = CreateBitmap(mat.cols, mat.rows, 1, nChannels * 8, mat.data);
 
     return true;
@@ -118,7 +116,6 @@ void ImageMix(Mat &mat)
     }
     LOG("changed pixels: ")
     LOG(tot);
-    // cout << tot << "\n";
 }
 
 void getImgFormClipboard(HWND hwnd)
@@ -154,7 +151,6 @@ void getImgFormClipboard(HWND hwnd)
             break;
         case COCKROACH_MODE:
             img = imread("./image/cockroach.png", CV_8UC4);
-            // imshow("test", img);
             break;
         case TANK_MODE:
             img = getMirageTank(img);
@@ -176,7 +172,6 @@ void getImgFormClipboard(HWND hwnd)
         else
             Mat2HBitmap(bmp, temp);
 
-        // imshow("test", img);
         clip_lock = true;
         SetClipboardData(CF_BITMAP, bmp);
         bmp = NULL;
