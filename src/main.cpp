@@ -77,6 +77,10 @@ WNDCLASS wndclass;
 #define IDC_SLIDER_MIX_NUM 31
 #define IDC_SLIDER_MIX_OFFSET 32
 
+#define POS_ROTATE 4
+#define POS_BERLIN_NOISE 7
+#define POS_OUTPUT_MODE 9
+
 int excItem_0[100] = {IDR_START, IDR_PAUSE, IDR_TANK, IDR_COCKROACH};
 int excNum_0 = 4;
 //==========================================
@@ -223,7 +227,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 MIX_MODE = TANK_MODE;
                 output_mode = OUTPUT_PNG;
-                ModifyMenuW(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"输出格式：PNG");
+                ModifyMenuW(hmenu, POS_OUTPUT_MODE, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"输出格式：PNG");
                 LOG("Enable mirage tank mode");
             }
             if (id == IDR_LOADCFG)
@@ -242,16 +246,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 switch (angle)
                 {
                 case 0:
-                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 0°");
+                    ModifyMenuW(hmenu, POS_ROTATE, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 0°");
                     break;
                 case 90:
-                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 90°");
+                    ModifyMenuW(hmenu, POS_ROTATE, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 90°");
                     break;
                 case 180:
-                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 180°");
+                    ModifyMenuW(hmenu, POS_ROTATE, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 180°");
                     break;
                 case 270:
-                    ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 270°");
+                    ModifyMenuW(hmenu, POS_ROTATE, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 270°");
                     break;
                 default:
                     break;
@@ -263,10 +267,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 switch (berlinEnable)
                 {
                 case 0:
-                    ModifyMenuW(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已禁用)");
+                    ModifyMenuW(hmenu, POS_BERLIN_NOISE, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已禁用)");
                     break;
                 case 1:
-                    ModifyMenuW(hmenu, 6, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已启用)");
+                    ModifyMenuW(hmenu, POS_BERLIN_NOISE, MF_STRING | MF_BYPOSITION, IDR_BERLIN_NOISE, L"柏林噪声(已启用)");
                     break;
                 default:
                     break;
@@ -275,7 +279,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (id == IDR_RESET_ANGLE)
             {
                 angle = 0;
-                ModifyMenuW(hmenu, 4, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 0°");
+                ModifyMenuW(hmenu, POS_ROTATE, MF_STRING | MF_BYPOSITION, IDR_ROTATE, L"顺时针旋转 0°");
             }
             if (id == IDR_OUTPUT_MODE)
             {
@@ -285,10 +289,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     switch (output_mode)
                     {
                     case OUTPUT_JPG:
-                        ModifyMenuW(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"输出格式：JPEG");
+                        ModifyMenuW(hmenu, POS_OUTPUT_MODE, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"输出格式：JPEG");
                         break;
                     case OUTPUT_PNG:
-                        ModifyMenuW(hmenu, 7, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"输出格式：PNG");
+                        ModifyMenuW(hmenu, POS_OUTPUT_MODE, MF_STRING | MF_BYPOSITION, IDR_OUTPUT_MODE, L"输出格式：PNG");
                         break;
                     default:
                         break;
